@@ -465,3 +465,13 @@ tr:hover { background: rgba(var(--accent-rgb), .05); }
     .emulator-frame-wrapper { border: none !important; border-radius: 0 !important; box-shadow: none !important; flex: 1 1 auto !important; width: 100vw !important; height: calc(100vh - 50px) !important; aspect-ratio: auto !important; }
     #emulator-player { width: 100% !important; height: 100% !important; }
 }
+
+
+/* ===== Menu dinâmico, painel de layout e rodapé ===== */
+.nav-dynamic { display: contents; }
+.admin-check-row { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 8px; color: var(--text-gray); font-size: 0.9rem; }
+.admin-check-row input { accent-color: var(--accent); margin-right: 6px; }
+.color-input { width: 52px; height: 38px; border: 1px solid var(--line-strong); border-radius: 8px; background: var(--bg-input); cursor: pointer; padding: 2px; }
+.site-footer { margin-top: 40px; padding: 22px 20px 90px; border-top: 1px solid var(--line); text-align: center; color: var(--text-gray); font-size: 0.85rem; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.site-footer a { color: var(--accent); text-decoration: none; font-weight: 600; }
+.site-footer a:hover { text-decoration: underline; }

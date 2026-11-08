@@ -28,10 +28,12 @@
         <button id="btn-menu-toggle" class="menu-toggle-arrow">▼</button>
 
         <nav class="nav-links" id="navbar-links">
-            <a href="https://workinstore.org" target="_blank" class="btn-home">🏠 Home</a>
+            <div id="dynamic-menu-links" class="nav-dynamic">
+                <a href="https://workinstore.org" target="_blank" class="btn-home">🏠 Home</a>
             <a href="https://games.workinstore.org" target="_blank" class="btn-home">🎮 Games Workin'</a>
             <a href="https://bombapatch.workinstore.org" target="_blank" class="btn-home">⚽ Bomba Patch Workin'</a>
             <a href="https://workinstore.org/areadojogador" target="_blank" class="btn-home">🕹️ Área do Jogador</a>
+            </div>
             
             <button id="btn-open-auth" class="btn-home" title="Acesso do administrador">🔒 Admin</button>
 
@@ -58,7 +60,7 @@
                 <p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Área restrita ao administrador do site.</p>
                 <div class="form-group">
                     <label>E-mail:</label>
-                    <input type="email" id="login-email" class="input-style next-on-enter" placeholder="admin@admin.com">
+                    <input type="email" id="login-email" class="input-style next-on-enter" placeholder="seu e-mail de acesso">
                 </div>
                 <div class="form-group">
                     <label>Senha:</label>
@@ -147,6 +149,8 @@
                 <button id="tab-add-game" class="btn-home">Cadastrar / Editar Jogo</button>
                 <button id="tab-advanced-menu" class="btn-home" style="background: transparent;">Avançado / Categorias</button>
                 <button id="tab-manage-users" class="btn-home" style="background: transparent;">Gerenciar Usuários / Exclusões</button>
+                <button id="tab-menu-builder" class="btn-home" style="background: transparent;">🧭 Menu de Navegação</button>
+                <button id="tab-layout" class="btn-home" style="background: transparent;">🎨 Layout / Visual</button>
             </div>
 
             <div id="admin-game-section" class="admin-tab-body">
@@ -273,6 +277,84 @@
                     </table>
                 </div>
             </div>
+                    <div id="admin-menu-section" class="admin-tab-body hidden">
+                <h3>🧭 Barra de Menus do Site</h3>
+                <p style="color:var(--text-gray); font-size:0.85rem; margin-bottom:20px;">Os itens cadastrados aqui substituem os links da barra superior. Sem itens, o menu padrão é exibido.</p>
+                <div class="admin-box-nested">
+                    <h4>Adicionar / Editar Item</h4>
+                    <input type="hidden" id="m-edit-id" value="">
+                    <div class="form-grid" style="margin-top:10px;">
+                        <div class="form-group"><label>Nome do Item:</label><input type="text" id="m-label" class="input-style" placeholder="Ex: Home"></div>
+                        <div class="form-group"><label>Ícone (emoji):</label><input type="text" id="m-icon" class="input-style" placeholder="Ex: 🏠" maxlength="4"></div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group"><label>Link (URL):</label><input type="text" id="m-url" class="input-style" placeholder="https://..."></div>
+                        <div class="form-group"><label>Ordem:</label><input type="number" id="m-order" class="input-style" value="1"></div>
+                    </div>
+                    <div class="admin-check-row">
+                        <label><input type="checkbox" id="m-newtab" checked> Abrir em nova aba</label>
+                        <label><input type="checkbox" id="m-active" checked> Visível no menu</label>
+                    </div>
+                    <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:15px;">
+                        <button id="btn-save-menu-item" class="btn-play-now" style="flex:2;">Adicionar Item ao Menu ➕</button>
+                        <button id="btn-cancel-menu-item" class="btn-sm" style="flex:1;">Limpar</button>
+                    </div>
+                </div>
+                <div class="admin-box-nested">
+                    <h4>Itens Atuais</h4>
+                    <button id="btn-import-default-menu" class="btn-home" style="margin:8px 0;">📥 Importar links padrão para edição</button>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead><tr><th>Ordem</th><th>Item</th><th>Link</th><th>Ações</th></tr></thead>
+                            <tbody id="admin-menu-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="admin-layout-section" class="admin-tab-body hidden">
+                <h3>🎨 Layout e Visual do Site</h3>
+                <p style="color:var(--text-gray); font-size:0.85rem; margin-bottom:20px;">As alterações valem para todos os visitantes.</p>
+                <div class="admin-box-nested">
+                    <h4>Aparência</h4>
+                    <div class="form-grid" style="margin-top:10px;">
+                        <div class="form-group"><label>Tema padrão:</label>
+                            <select id="l-theme" class="select-style" style="width:100%;">
+                                <option value="padrao">Padrão (escuro + azul)</option>
+                                <option value="alternativo">Alternativo (preto + verde)</option>
+                                <option value="claro">Claro (branco + azul)</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label>Cor de destaque:</label>
+                            <div style="display:flex; gap:10px; align-items:center;">
+                                <input type="color" id="l-accent" value="#2f8cff" class="color-input">
+                                <label style="font-size:0.85rem;"><input type="checkbox" id="l-accent-enabled"> Usar cor personalizada</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group"><label>Logo (parte 1):</label><input type="text" id="l-logo1" class="input-style"></div>
+                        <div class="form-group"><label>Logo (parte 2, destacada):</label><input type="text" id="l-logo2" class="input-style"></div>
+                    </div>
+                    <div class="admin-check-row"><label><input type="checkbox" id="l-show-theme" checked> Mostrar botão de troca de tema</label></div>
+                </div>
+                <div class="admin-box-nested">
+                    <h4>Rodapé / Atribuição</h4>
+                    <div class="form-group" style="margin-top:10px;"><label>Texto de atribuição:</label><input type="text" id="l-footer-text" class="input-style" placeholder="© Seu Site — Todos os direitos reservados."></div>
+                    <div class="form-grid">
+                        <div class="form-group"><label>Texto do link (opcional):</label><input type="text" id="l-footer-link-text" class="input-style" placeholder="Desenvolvido por ..."></div>
+                        <div class="form-group"><label>URL do link (opcional):</label><input type="text" id="l-footer-link-url" class="input-style" placeholder="https://..."></div>
+                    </div>
+                </div>
+                <div class="admin-box-nested">
+                    <h4>Contato</h4>
+                    <div class="form-group" style="margin-top:10px;"><label>WhatsApp (somente números com DDI/DDD):</label><input type="text" id="l-whatsapp" class="input-style" placeholder="5588999999999"></div>
+                </div>
+                <div style="display:flex; flex-wrap:wrap; gap:10px;">
+                    <button id="btn-save-layout" class="btn-play-now" style="flex:2;">Salvar Layout 💾</button>
+                    <button id="btn-reset-layout" class="btn-sm" style="flex:1;">Restaurar Padrão</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -378,9 +460,14 @@
         </main>
     </div>
 
-<a href="https://wa.me/5588988470190" target="_blank" class="whatsapp-float">
-    		<img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
-		</a>
+<footer class="site-footer">
+        <span id="footer-attribution-text">© Games Workin' — Todos os direitos reservados.</span>
+        <a id="footer-attribution-link" class="hidden" href="#" target="_blank" rel="noopener"></a>
+    </footer>
+
+    <a href="#" id="whatsapp-float" target="_blank" rel="noopener" class="whatsapp-float hidden">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
+    </a>
     
     <script type="module" src="app.js"></script>
     <script src="theme.js"></script>
