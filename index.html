@@ -33,7 +33,7 @@
             <a href="https://bombapatch.workinstore.org" target="_blank" class="btn-home">⚽ Bomba Patch Workin'</a>
             <a href="https://workinstore.org/areadojogador" target="_blank" class="btn-home">🕹️ Área do Jogador</a>
             
-            <button id="btn-open-auth" class="btn-home">Entrar / Cadastrar</button>
+            <button id="btn-open-auth" class="btn-home" title="Acesso do administrador">🔒 Admin</button>
 
             <div id="user-info" class="user-profile hidden">
                 <img id="user-avatar" src="" alt="Avatar">
@@ -54,10 +54,11 @@
             <span class="close-modal" id="close-auth-modal">✖</span>
             
             <div id="auth-login-section">
-                <h2>Acessar Plataforma</h2>
+                <h2>Acesso Administrativo</h2>
+                <p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Área restrita ao administrador do site.</p>
                 <div class="form-group">
                     <label>E-mail:</label>
-                    <input type="email" id="login-email" class="input-style next-on-enter" placeholder="seuemail@exemplo.com">
+                    <input type="email" id="login-email" class="input-style next-on-enter" placeholder="admin@admin.com">
                 </div>
                 <div class="form-group">
                     <label>Senha:</label>
@@ -67,48 +68,8 @@
                 
                 <p class="auth-switch-text"><a href="#" id="link-forgot-password">Esqueci minha senha</a></p>
                 
-                <hr style="border-color: rgba(255,255,255,0.1); margin: 15px 0;">
-                
-                <button id="btn-login-google" class="btn-google" style="width: 100%; justify-content: center;">
-                    <svg aria-hidden="true" class="google-icon" width="18" height="18" viewBox="0 0 18 18">
-                        <path fill="#4285F4" d="M17.64 9.2c0-.63-.06-1.25-.16-1.84H9v3.47h4.84c-.21 1.12-.84 2.07-1.8 2.72v2.26h2.92c1.71-1.57 2.68-3.88 2.68-6.61z"/>
-                        <path fill="#34A853" d="M9 18c2.43 0 4.47-.8 5.96-2.19l-2.92-2.26c-.8.54-1.83.85-3.04.85-2.34 0-4.32-1.58-5.03-3.71H.95v2.33C2.44 15.99 5.47 18 9 18z"/>
-                        <path fill="#FBBC05" d="M3.97 10.69c-.18-.54-.28-1.12-.28-1.69s.1-1.15.28-1.69V4.98H.95A8.99 9.001 0 0 0 0 9c0 1.45.35 2.82.95 4.02l2.33-1.81l.69-.52z"/>
-                        <path fill="#EA4335" d="M9 3.58c1.32 0 2.5.45 3.44 1.35L15 2.4C13.46.97 11.41 0 9 0C5.47 0 2.44 2.01.95 4.98l3.02 2.33c.71-2.13 2.69-3.73 5.03-3.73z"/>
-                    </svg>
-                    <span>Entrar com Google</span>
-                </button>
-                <p class="auth-switch-text">Não tem uma conta? <a href="#" id="link-to-register">Cadastre-se aqui</a></p>
             </div>
 
-            <div id="auth-register-section" class="hidden">
-                <h2>Criar Nova Conta</h2>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label>Nome:</label>
-                        <input type="text" id="reg-nome" class="input-style next-on-enter" placeholder="Nome">
-                    </div>
-                    <div class="form-group">
-                        <label>Sobrenome:</label>
-                        <input type="text" id="reg-sobrenome" class="input-style next-on-enter" placeholder="Sobrenome">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Cidade:</label>
-                    <input type="text" id="reg-cidade" class="input-style next-on-enter" placeholder="Sua Cidade">
-                </div>
-                <div class="form-group">
-                    <label>E-mail:</label>
-                    <input type="email" id="reg-email" class="input-style next-on-enter" placeholder="seuemail@exemplo.com">
-                    <small style="color: var(--text-gray); font-size: 0.75rem; margin-top: 2px;">Provedores aceitos: Gmail, Hotmail, Outlook, Yahoo e iCloud.</small>
-                </div>
-                <div class="form-group">
-                    <label>Senha:</label>
-                    <input type="password" id="reg-senha" class="input-style register-submit-on-enter" placeholder="Mínimo 6 dígitos">
-                </div>
-                <button id="btn-execute-register" class="btn-play-now" style="margin-top: 15px;">Finalizar Cadastro 🎮</button>
-                <p class="auth-switch-text">Já possui conta? <a href="#" id="link-to-login">Voltar ao Login</a></p>
-            </div>
         </div>
     </div>
 

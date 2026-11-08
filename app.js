@@ -126,9 +126,16 @@ if (btnMenuToggle && navbarLinks) {
     });
 }
 
+const ADMIN_EMAIL = "admin@admin.com";
+
 // Ouvinte de Estado da Sessão (Auth)
 onAuthStateChanged(auth, async (user) => {
     if (user) {
+        // Apenas o administrador pode manter sessão ativa
+        if (user.email !== ADMIN_EMAIL) {
+            await signOut(auth);
+            return;
+        }
         currentUser = user;
         currentUId = user.uid;
         
@@ -235,7 +242,7 @@ if (document.getElementById('btn-save-profile')) {
     });
 }
 
-if (btnOpenAuth) btnOpenAuth.addEventListener('click', () => { modalAuth.classList.remove('hidden'); authLoginSec.classList.remove('hidden'); authRegisterSec.classList.add('hidden'); resetAuthFormStates(); });
+if (btnOpenAuth) btnOpenAuth.addEventListener('click', () => { modalAuth.classList.remove('hidden'); authLoginSec.classList.remove('hidden'); authRegisterSec?.classList.add('hidden'); resetAuthFormStates(); });
 if (document.getElementById('close-auth-modal')) document.getElementById('close-auth-modal').addEventListener('click', () => modalAuth.classList.add('hidden'));
 if (document.getElementById('link-forgot-password')) document.getElementById('link-forgot-password').addEventListener('click', (e) => { e.preventDefault(); modalAuth.classList.add('hidden'); modalForgot.classList.remove('hidden'); });
 if (document.getElementById('close-forgot-modal')) document.getElementById('close-forgot-modal').addEventListener('click', () => modalForgot.classList.add('hidden'));
@@ -244,14 +251,14 @@ if (document.getElementById('link-to-register')) {
     document.getElementById('link-to-register').addEventListener('click', (e) => { 
         e.preventDefault(); 
         authLoginSec.classList.add('hidden'); 
-        authRegisterSec.classList.remove('hidden'); 
+        authRegisterSec?.classList.remove('hidden'); 
         resetAuthFormStates();
     });
 }
 if (document.getElementById('link-to-login')) {
     document.getElementById('link-to-login').addEventListener('click', (e) => { 
         e.preventDefault(); 
-        authRegisterSec.classList.add('hidden'); 
+        authRegisterSec?.classList.add('hidden'); 
         authLoginSec.classList.remove('hidden'); 
         resetAuthFormStates();
     });
@@ -293,6 +300,7 @@ async function processLoginAction() {
     const email = document.getElementById('login-email').value.trim();
     const senha = loginPasswordInput.value.trim();
     if(!email || !senha) { alert("Preencha todos os campos para entrar!"); return; }
+    if(email.toLowerCase() !== ADMIN_EMAIL) { alert("🔒 Acesso restrito ao administrador. Para jogar não é necessário entrar."); return; }
     btnExecuteLogin.textContent = "Logando...";
     btnExecuteLogin.disabled = true;
     try { 
@@ -306,6 +314,7 @@ async function processLoginAction() {
 }
 
 async function processRegisterAction() {
+    alert("O cadastro de contas está desativado."); return;
     const nome = document.getElementById('reg-nome').value.trim();
     const sobrenome = document.getElementById('reg-sobrenome').value.trim();
     const cidade = document.getElementById('reg-cidade').value.trim();
@@ -342,6 +351,7 @@ async function processRegisterAction() {
 
 if (document.getElementById('btn-login-google')) {
     document.getElementById('btn-login-google').addEventListener('click', async () => {
+        alert("Login com Google desativado."); return;
         try { await signInWithPopup(auth, provider); modalAuth.classList.add('hidden'); } 
         catch (err) { alert("Erro Google Auth: " + err.message); }
     });
