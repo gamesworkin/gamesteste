@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Games Workin' Emulação Online</title>
+    <title>Workin'Store Emulação Online</title>
     <link rel="manifest" href="manifest.json">
     <link rel="shortcut icon" href="fav.ico" type="image/x-icon">
     <link rel="icon" href="fav.ico" type="image/x-icon">
@@ -23,19 +23,22 @@
 <body oncontextmenu="return false;">
 
     <header class="navbar">
-        <div class="logo">GAMES <span>WORKIN'</span></div>
+        <a href="#" class="brand" id="site-brand" aria-label="Workin'Store">
+            <img id="logo-square" class="logo-square hidden" alt="Logo">
+            <img id="logo-wide" class="logo-wide hidden" alt="Workin'Store">
+            <div class="logo" id="logo-text">Workin'<span>Store</span></div>
+        </a>
         
         <button id="btn-menu-toggle" class="menu-toggle-arrow">▼</button>
 
         <nav class="nav-links" id="navbar-links">
             <div id="dynamic-menu-links" class="nav-dynamic">
                 <a href="https://workinstore.org" target="_blank" class="btn-home">🏠 Home</a>
-            <a href="https://games.workinstore.org" target="_blank" class="btn-home">🎮 Games Workin'</a>
+            <a href="https://games.workinstore.org" target="_blank" class="btn-home">🎮 Workin'Store</a>
             <a href="https://bombapatch.workinstore.org" target="_blank" class="btn-home">⚽ Bomba Patch Workin'</a>
             <a href="https://workinstore.org/areadojogador" target="_blank" class="btn-home">🕹️ Área do Jogador</a>
             </div>
             
-            <button id="btn-open-auth" class="btn-home" title="Acesso do administrador">🔒 Admin</button>
 
             <div id="user-info" class="user-profile hidden">
                 <img id="user-avatar" src="" alt="Avatar">
@@ -46,6 +49,13 @@
             </div>
         </nav>
     </header>
+
+    <button id="btn-open-auth" class="admin-ghost" type="button" title="" aria-label="Acesso restrito">•</button>
+
+    <div id="login-spinner" class="login-spinner hidden" aria-live="polite">
+        <div class="spinner-ring"></div>
+        <p id="login-spinner-text">Entrando...</p>
+    </div>
 
     <button id="btn-theme-toggle" class="theme-fab" type="button" aria-label="Trocar tema">
         <span class="theme-dot">🌙</span><span class="theme-label">Tema: Padrão</span>
@@ -151,6 +161,7 @@
                 <button id="tab-manage-users" class="btn-home" style="background: transparent;">Gerenciar Usuários / Exclusões</button>
                 <button id="tab-menu-builder" class="btn-home" style="background: transparent;">🧭 Menu de Navegação</button>
                 <button id="tab-layout" class="btn-home" style="background: transparent;">🎨 Layout / Visual</button>
+                <button id="tab-admin-profile" class="btn-home" style="background: transparent;">👤 Meu Perfil</button>
             </div>
 
             <div id="admin-game-section" class="admin-tab-body">
@@ -336,6 +347,31 @@
                         <div class="form-group"><label>Logo (parte 1):</label><input type="text" id="l-logo1" class="input-style"></div>
                         <div class="form-group"><label>Logo (parte 2, destacada):</label><input type="text" id="l-logo2" class="input-style"></div>
                     </div>
+                    <div class="form-group"><label>Logo quadrada (ícone):</label>
+                        <div class="img-picker">
+                            <img id="l-logo-square-preview" class="img-preview" alt="Prévia">
+                            <div class="img-picker-fields">
+                                <input type="text" id="l-logo-square" class="input-style" placeholder="Link da imagem (https://...)">
+                                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                                    <label class="custom-file-upload" style="margin:0;">📁 Enviar imagem<input type="file" id="l-logo-square-file" accept="image/*" style="display:none;"></label>
+                                    <button type="button" class="btn-sm" data-clear="l-logo-square">Remover</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group"><label>Logo retangular (nome por extenso):</label>
+                        <div class="img-picker">
+                            <img id="l-logo-wide-preview" class="img-preview wide" alt="Prévia">
+                            <div class="img-picker-fields">
+                                <input type="text" id="l-logo-wide" class="input-style" placeholder="Link da imagem (https://...)">
+                                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                                    <label class="custom-file-upload" style="margin:0;">📁 Enviar imagem<input type="file" id="l-logo-wide-file" accept="image/*" style="display:none;"></label>
+                                    <button type="button" class="btn-sm" data-clear="l-logo-wide">Remover</button>
+                                </div>
+                            </div>
+                        </div>
+                        <small style="color:var(--text-gray);">Sem logo retangular, o texto acima é exibido.</small>
+                    </div>
                     <div class="admin-check-row"><label><input type="checkbox" id="l-show-theme" checked> Mostrar botão de troca de tema</label></div>
                 </div>
                 <div class="admin-box-nested">
@@ -348,12 +384,47 @@
                 </div>
                 <div class="admin-box-nested">
                     <h4>Contato</h4>
-                    <div class="form-group" style="margin-top:10px;"><label>WhatsApp (somente números com DDI/DDD):</label><input type="text" id="l-whatsapp" class="input-style" placeholder="5588999999999"></div>
+                    <div class="form-group" style="margin-top:10px;"><label>WhatsApp (com DDI e DDD):</label><input type="tel" id="l-whatsapp" class="input-style phone-mask" placeholder="+55 (88) 99999-9999"></div>
                 </div>
                 <div style="display:flex; flex-wrap:wrap; gap:10px;">
                     <button id="btn-save-layout" class="btn-play-now" style="flex:2;">Salvar Layout 💾</button>
                     <button id="btn-reset-layout" class="btn-sm" style="flex:1;">Restaurar Padrão</button>
                 </div>
+            </div>
+
+            <div id="admin-profile-section" class="admin-tab-body hidden">
+                <h3>👤 Meu Perfil</h3>
+                <p style="color:var(--text-gray); font-size:0.85rem; margin-bottom:20px;">Seus dados pessoais exibidos na barra de menus.</p>
+                <div class="admin-box-nested">
+                    <h4>Foto de Perfil</h4>
+                    <div class="img-picker">
+                        <img id="ap-photo-preview" class="img-preview round" src="https://win98icon.org/styles/asset/windows98/v1/user_computer-0.png" alt="Prévia">
+                        <div class="img-picker-fields">
+                            <input type="text" id="ap-photo-url" class="input-style" placeholder="Cole o link da imagem (https://...)">
+                            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                                <label class="custom-file-upload" style="margin:0;">📁 Enviar imagem<input type="file" id="ap-photo-file" accept="image/*" style="display:none;"></label>
+                                <button type="button" class="btn-sm" data-clear="ap-photo-url">Remover</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="admin-box-nested">
+                    <h4>Dados Pessoais</h4>
+                    <div class="form-grid" style="margin-top:10px;">
+                        <div class="form-group"><label>Nome:</label><input type="text" id="ap-nome" class="input-style"></div>
+                        <div class="form-group"><label>Sobrenome:</label><input type="text" id="ap-sobrenome" class="input-style"></div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group"><label>Nome de exibição (opcional):</label><input type="text" id="ap-apelido" class="input-style" placeholder="Ex: Diretor Admin"></div>
+                        <div class="form-group"><label>Cidade:</label><input type="text" id="ap-cidade" class="input-style"></div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group"><label>WhatsApp:</label><input type="tel" id="ap-whatsapp" class="input-style phone-mask" placeholder="+55 (88) 99999-9999"></div>
+                        <div class="form-group"><label>E-mail (não alterável):</label><input type="text" id="ap-email" class="input-style" readonly style="opacity:.5; cursor:not-allowed;"></div>
+                    </div>
+                    <div class="form-group"><label>Bio (opcional):</label><textarea id="ap-bio" class="input-style" rows="2"></textarea></div>
+                </div>
+                <button id="btn-save-admin-profile" class="btn-play-now">Salvar Meu Perfil 💾</button>
             </div>
         </div>
     </div>
@@ -461,7 +532,7 @@
     </div>
 
 <footer class="site-footer">
-        <span id="footer-attribution-text">© Games Workin' — Todos os direitos reservados.</span>
+        <span id="footer-attribution-text">© Workin'Store — Todos os direitos reservados.</span>
         <a id="footer-attribution-link" class="hidden" href="#" target="_blank" rel="noopener"></a>
     </footer>
 

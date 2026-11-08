@@ -1,5 +1,5 @@
 /* =======================================================
-   GAMES WORKIN' — DESIGN SYSTEM PROFISSIONAL COM 3 TEMAS
+   WORKIN'STORE — DESIGN SYSTEM PROFISSIONAL COM 3 TEMAS
    Padrão (escuro + azul) | Alternativo (preto + verde) | Claro (branco + azul)
    ======================================================= */
 @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
@@ -125,7 +125,7 @@ h1, h2, h3, h4, .logo { font-family: 'Rajdhani', 'Manrope', sans-serif; letter-s
 /* ---------- NAVBAR ---------- */
 .navbar {
     display: flex; justify-content: space-between; align-items: center;
-    padding: 14px 5%;
+    padding: 8px 4%; min-height: 58px; gap: 14px;
     background-color: var(--bg-nav);
     backdrop-filter: blur(14px) saturate(140%);
     -webkit-backdrop-filter: blur(14px) saturate(140%);
@@ -142,7 +142,10 @@ h1, h2, h3, h4, .logo { font-family: 'Rajdhani', 'Manrope', sans-serif; letter-s
     opacity: .85;
 }
 
-.logo { font-size: 1.7rem; font-weight: 700; letter-spacing: 3px; color: var(--text-white); }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; min-width: 0; flex-shrink: 0; }
+.logo-square { width: 38px; height: 38px; border-radius: 10px; object-fit: cover; box-shadow: 0 0 0 1px var(--line-strong); }
+.logo-wide { height: 34px; max-width: 200px; object-fit: contain; }
+.logo { font-size: 1.4rem; font-weight: 700; letter-spacing: 1.5px; color: var(--text-white); white-space: nowrap; }
 .logo span {
     background: linear-gradient(90deg, var(--accent), var(--accent-2));
     -webkit-background-clip: text; background-clip: text; color: transparent;
@@ -158,7 +161,18 @@ h1, h2, h3, h4, .logo { font-family: 'Rajdhani', 'Manrope', sans-serif; letter-s
 .menu-toggle-arrow:hover { border-color: var(--accent); background: rgba(var(--accent-rgb), .08); }
 .menu-toggle-arrow.open-active { transform: rotate(180deg); }
 
-.nav-links { display: flex; align-items: center; gap: 10px; }
+.nav-links { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.nav-dynamic { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+.navbar .nav-links .btn-home {
+    padding: 6px 12px; font-size: .8rem; border-radius: 999px;
+    border-color: transparent; background: transparent;
+}
+.navbar .nav-links .btn-home:hover { border-color: var(--line-strong); background: rgba(var(--accent-rgb), .1); transform: none; }
+.navbar .user-profile { gap: 6px; padding-left: 8px; margin-left: 4px; border-left: 1px solid var(--line); }
+.navbar .user-profile img { width: 30px; height: 30px; }
+.navbar #user-name { font-size: .82rem; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.navbar .btn-sm { padding: 5px 10px; font-size: .78rem; border-radius: 999px; }
+.navbar #btn-admin-panel { border-radius: 999px; }
 
 /* ---------- BOTÕES ---------- */
 .btn-home {
@@ -388,7 +402,7 @@ tr:hover { background: rgba(var(--accent-rgb), .05); }
 
 /* ---------- BOTÃO FLUTUANTE DE TEMA ---------- */
 .theme-fab {
-    position: fixed; right: 20px; top: 84px; z-index: 1500;
+    position: fixed; right: 20px; top: 72px; z-index: 1500;
     display: flex; align-items: center; gap: 8px;
     height: 44px; padding: 0 14px 0 6px; border-radius: 999px;
     background: var(--bg-elev); color: var(--text-white);
@@ -420,7 +434,14 @@ tr:hover { background: rgba(var(--accent-rgb), .05); }
    RESPONSIVIDADE
    ======================================================= */
 @media (max-width: 768px) {
-    .navbar { flex-direction: row; justify-content: space-between; align-items: center; padding: 14px 20px; }
+    .navbar { flex-direction: row; justify-content: space-between; align-items: center; padding: 6px 14px; min-height: 52px; }
+    .logo { font-size: 1.15rem; }
+    .logo-square { width: 32px; height: 32px; }
+    .logo-wide { height: 28px; max-width: 150px; }
+    .menu-toggle-arrow { padding: 5px 11px; font-size: .9rem; }
+    .nav-dynamic { flex-direction: column; width: 100%; gap: 6px; }
+    .navbar .nav-links .btn-home { width: 100%; padding: 10px 14px; font-size: .88rem; border-radius: 10px; background: rgba(var(--accent-rgb), .05); border-color: var(--line); }
+    .navbar .user-profile { border-left: none; margin-left: 0; padding-left: 0; }
     .menu-toggle-arrow { display: block !important; }
 
     .nav-links {
@@ -428,7 +449,7 @@ tr:hover { background: rgba(var(--accent-rgb), .05); }
         position: absolute; top: 100%; left: 0;
         background-color: var(--bg-elev);
         border-bottom: 1px solid var(--line-strong);
-        padding: 20px; gap: 12px;
+        padding: 12px 14px 16px; gap: 8px; border-radius: 0 0 16px 16px;
         box-shadow: 0 20px 40px -10px rgba(0, 0, 0, .5);
         z-index: 999;
     }
@@ -454,7 +475,7 @@ tr:hover { background: rgba(var(--accent-rgb), .05); }
     .preview-banner { height: 140px; }
     .preview-body-content { padding: 15px; }
 
-    .theme-fab { top: 76px; right: 14px; padding: 0 6px; }
+    .theme-fab { top: 64px; right: 14px; padding: 0 6px; }
     .theme-fab .theme-label { display: none; }
     .whatsapp-float { width: 50px; height: 50px; bottom: 20px; right: 20px; }
 
@@ -475,3 +496,38 @@ tr:hover { background: rgba(var(--accent-rgb), .05); }
 .site-footer { margin-top: 40px; padding: 22px 20px 90px; border-top: 1px solid var(--line); text-align: center; color: var(--text-gray); font-size: 0.85rem; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
 .site-footer a { color: var(--accent); text-decoration: none; font-weight: 600; }
 .site-footer a:hover { text-decoration: underline; }
+
+
+/* ===== Botão admin discreto ===== */
+.admin-ghost {
+    position: fixed; right: 3px; bottom: 3px; z-index: 900;
+    width: 14px; height: 14px; padding: 0; border: none; border-radius: 50%;
+    background: transparent; color: var(--text-gray); font-size: 10px; line-height: 14px;
+    opacity: .12; cursor: default; transition: opacity .4s;
+    -webkit-tap-highlight-color: transparent;
+}
+.admin-ghost:hover, .admin-ghost:focus-visible { opacity: .45; outline: none; }
+
+/* ===== Spinner de login ===== */
+.login-spinner {
+    position: fixed; inset: 0; z-index: 100000;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
+    background: rgba(0, 0, 0, .72); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    animation: fadeIn .25s ease both; color: var(--text-white); font-weight: 600; letter-spacing: .5px;
+}
+.spinner-ring {
+    width: 64px; height: 64px; border-radius: 50%;
+    border: 4px solid rgba(var(--accent-rgb), .2);
+    border-top-color: var(--accent); border-right-color: var(--accent-2);
+    animation: spinLoop .8s linear infinite;
+    box-shadow: 0 0 30px -6px rgba(var(--accent-rgb), .8);
+}
+@keyframes spinLoop { to { transform: rotate(360deg); } }
+
+/* ===== Seletor de imagem (link / upload) ===== */
+.img-picker { display: flex; gap: 14px; align-items: center; margin-top: 8px; flex-wrap: wrap; }
+.img-picker-fields { flex: 1; min-width: 220px; display: flex; flex-direction: column; gap: 8px; }
+.img-preview { width: 64px; height: 64px; border-radius: 12px; object-fit: cover; background: var(--bg-input); border: 1px solid var(--line-strong); }
+.img-preview.round { border-radius: 50%; width: 76px; height: 76px; }
+.img-preview.wide { width: 160px; height: 50px; object-fit: contain; }
+body:has(.nav-links.mobile-open) .theme-fab { opacity: 0; pointer-events: none; }

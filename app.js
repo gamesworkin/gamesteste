@@ -163,7 +163,8 @@ onAuthStateChanged(auth, async (user) => {
 
         if (await isAdminEmail(user.email)) {
             isAdminMode = true;
-            if (userName) userName.textContent = "Diretor Admin";
+            const ap = snapshot.exists() ? snapshot.val() : {};
+            applyAdminProfileToNavbar(ap);
             if (btnAdminPanel) btnAdminPanel.classList.remove('hidden');
             if (btnOpenProfile) btnOpenProfile.classList.add('hidden');
             if (playerDashboard) playerDashboard.classList.add('hidden');
@@ -314,10 +315,14 @@ async function processLoginAction() {
     if(!(await isAdminEmail(email))) { alert("🔒 Acesso restrito ao administrador. Para jogar não é necessário entrar."); return; }
     btnExecuteLogin.textContent = "Logando...";
     btnExecuteLogin.disabled = true;
+    showLoginSpinner("Entrando...");
     try { 
         await signInWithEmailAndPassword(auth, email, senha); 
         modalAuth.classList.add('hidden'); 
+        showLoginSpinner("Bem-vindo! ✅");
+        setTimeout(hideLoginSpinner, 900);
     } catch (err) { 
+        hideLoginSpinner();
         alert("Acesso negado: " + err.message); 
         btnExecuteLogin.textContent = "Entrar ⚡";
         btnExecuteLogin.disabled = false;
@@ -573,7 +578,8 @@ function switchAdminTab(targetTab) {
         advanced: [tabAdvancedMenu, adminAdvancedSection],
         users: [tabManageUsers, adminUserSection],
         menu: [document.getElementById('tab-menu-builder'), document.getElementById('admin-menu-section')],
-        layout: [document.getElementById('tab-layout'), document.getElementById('admin-layout-section')]
+        layout: [document.getElementById('tab-layout'), document.getElementById('admin-layout-section')],
+        profile: [document.getElementById('tab-admin-profile'), document.getElementById('admin-profile-section')]
     };
     Object.values(tabs).forEach(([btn, sec]) => {
         if (btn) btn.style.background = "transparent";
@@ -592,6 +598,8 @@ function switchAdminTab(targetTab) {
         renderAdminMenuTable();
     } else if (targetTab === 'layout') {
         fillLayoutForm();
+    } else if (targetTab === 'profile') {
+        fillAdminProfileForm();
     }
 }
 
@@ -600,6 +608,7 @@ if (tabAdvancedMenu) tabAdvancedMenu.addEventListener('click', () => switchAdmin
 if (tabManageUsers) tabManageUsers.addEventListener('click', () => switchAdminTab('users'));
 if (document.getElementById('tab-menu-builder')) document.getElementById('tab-menu-builder').addEventListener('click', () => switchAdminTab('menu'));
 if (document.getElementById('tab-layout')) document.getElementById('tab-layout').addEventListener('click', () => switchAdminTab('layout'));
+if (document.getElementById('tab-admin-profile')) document.getElementById('tab-admin-profile').addEventListener('click', () => switchAdminTab('profile'));
 
 // --- FORMULÁRIO DE CADASTRO E EDIÇÃO DE JOGO INDIVIDUAL ---
 if (btnSaveNewGame) {
@@ -1124,10 +1133,12 @@ if (btnImportDefaultMenu) btnImportDefaultMenu.addEventListener('click', async (
 const LAYOUT_DEFAULTS = {
     temaPadrao: 'padrao',
     corDestaque: '',
-    logoParte1: 'GAMES',
-    logoParte2: "WORKIN'",
+    logoParte1: "Workin'",
+    logoParte2: "Store",
+    logoQuadrada: '',
+    logoRetangular: '',
     mostrarBotaoTema: true,
-    rodapeTexto: "© Games Workin' — Todos os direitos reservados.",
+    rodapeTexto: "© Workin'Store — Todos os direitos reservados.",
     rodapeLinkTexto: '',
     rodapeLinkUrl: '',
     whatsapp: ''
@@ -1157,8 +1168,14 @@ function applyLayout(cfg) {
         ['--accent', '--accent-2', '--accent-strong', '--accent-rgb'].forEach(v => root.style.removeProperty(v));
     }
 
-    const logo = document.querySelector('.navbar .logo');
-    if (logo) logo.innerHTML = `${escapeHtml(c.logoParte1)} <span>${escapeHtml(c.logoParte2)}</span>`;
+    const logo = document.getElementById('logo-text');
+    if (logo) logo.innerHTML = `${escapeHtml(c.logoParte1)}<span>${escapeHtml(c.logoParte2)}</span>`;
+    const lq = document.getElementById('logo-square');
+    const lw = document.getElementById('logo-wide');
+    const okImg = u => /^(https?:|data:image\/)/i.test(String(u || ''));
+    if (lq) { if (okImg(c.logoQuadrada)) { lq.src = c.logoQuadrada; lq.classList.remove('hidden'); } else lq.classList.add('hidden'); }
+    if (lw) { if (okImg(c.logoRetangular)) { lw.src = c.logoRetangular; lw.classList.remove('hidden'); } else lw.classList.add('hidden'); }
+    if (logo) logo.classList.toggle('hidden', okImg(c.logoRetangular));
 
     const themeBtn = document.getElementById('btn-theme-toggle');
     if (themeBtn) themeBtn.style.display = c.mostrarBotaoTema === false ? 'none' : '';
@@ -1199,7 +1216,10 @@ function fillLayoutForm() {
     set_('l-footer-text', c.rodapeTexto);
     set_('l-footer-link-text', c.rodapeLinkTexto);
     set_('l-footer-link-url', c.rodapeLinkUrl);
-    set_('l-whatsapp', c.whatsapp);
+    set_('l-whatsapp', formatPhone(c.whatsapp));
+    set_('l-logo-square', c.logoQuadrada);
+    set_('l-logo-wide', c.logoRetangular);
+    refreshPreview('l-logo-square'); refreshPreview('l-logo-wide');
 }
 
 const btnSaveLayout = document.getElementById('btn-save-layout');
@@ -1215,7 +1235,9 @@ if (btnSaveLayout) btnSaveLayout.addEventListener('click', async () => {
         rodapeTexto: v('l-footer-text'),
         rodapeLinkTexto: v('l-footer-link-text'),
         rodapeLinkUrl: v('l-footer-link-url'),
-        whatsapp: v('l-whatsapp').replace(/\D/g, '')
+        whatsapp: v('l-whatsapp').replace(/\D/g, ''),
+        logoQuadrada: v('l-logo-square'),
+        logoRetangular: v('l-logo-wide')
     };
     try {
         await set(ref(database, 'config/layout'), data);
@@ -1227,4 +1249,139 @@ if (btnResetLayout) btnResetLayout.addEventListener('click', async () => {
     if (!isAdminMode || !confirm("Restaurar o visual padrão do site?")) return;
     await set(ref(database, 'config/layout'), LAYOUT_DEFAULTS);
     fillLayoutForm();
+});
+
+
+// =======================================================
+// SPINNER DE LOGIN
+// =======================================================
+function showLoginSpinner(text) {
+    const el = document.getElementById('login-spinner');
+    const t = document.getElementById('login-spinner-text');
+    if (t && text) t.textContent = text;
+    if (el) el.classList.remove('hidden');
+}
+function hideLoginSpinner() {
+    const el = document.getElementById('login-spinner');
+    if (el) el.classList.add('hidden');
+}
+
+// =======================================================
+// MÁSCARA DE WHATSAPP: +55 (88) 99999-9999
+// =======================================================
+function formatPhone(value) {
+    let d = String(value || '').replace(/\D/g, '').slice(0, 13);
+    if (!d) return '';
+    let out = '+' + d.slice(0, 2);
+    if (d.length > 2) out += ' (' + d.slice(2, 4);
+    if (d.length > 4) out += ') ';
+    const rest = d.slice(4);
+    if (rest.length > 0) {
+        if (rest.length <= 8) out += rest.length > 4 ? rest.slice(0, 4) + '-' + rest.slice(4) : rest;
+        else out += rest.slice(0, 5) + '-' + rest.slice(5);
+    }
+    return out;
+}
+document.querySelectorAll('.phone-mask').forEach(inp => {
+    inp.addEventListener('input', () => { inp.value = formatPhone(inp.value); });
+    inp.addEventListener('keypress', e => { if (e.key.length === 1 && !/\d/.test(e.key)) e.preventDefault(); });
+});
+
+// =======================================================
+// IMAGENS: LINK OU UPLOAD EM BASE64 (com redimensionamento)
+// =======================================================
+function fileToBase64(file, maxSize = 512) {
+    return new Promise((resolve, reject) => {
+        if (!file || !file.type.startsWith('image/')) { reject(new Error('Arquivo não é uma imagem.')); return; }
+        const reader = new FileReader();
+        reader.onerror = () => reject(new Error('Falha ao ler o arquivo.'));
+        reader.onload = () => {
+            if (file.type === 'image/svg+xml' || file.type === 'image/gif') { resolve(reader.result); return; }
+            const img = new Image();
+            img.onload = () => {
+                const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+                const canvas = document.createElement('canvas');
+                canvas.width = Math.round(img.width * scale);
+                canvas.height = Math.round(img.height * scale);
+                canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+                resolve(canvas.toDataURL(file.type === 'image/png' ? 'image/png' : 'image/jpeg', 0.88));
+            };
+            img.onerror = () => reject(new Error('Imagem inválida.'));
+            img.src = reader.result;
+        };
+        reader.readAsDataURL(file);
+    });
+}
+function refreshPreview(inputId) {
+    const inp = document.getElementById(inputId);
+    const prev = document.getElementById(inputId + '-preview');
+    if (!inp || !prev) return;
+    const v = inp.value.trim();
+    if (/^(https?:|data:image\/)/i.test(v)) { prev.src = v; prev.style.visibility = 'visible'; }
+    else if (inputId === 'ap-photo-url') prev.src = "https://win98icon.org/styles/asset/windows98/v1/user_computer-0.png";
+    else prev.style.visibility = 'hidden';
+}
+function bindImagePicker(inputId, fileId, maxSize) {
+    const inp = document.getElementById(inputId);
+    const file = document.getElementById(fileId);
+    if (!inp) return;
+    inp.addEventListener('input', () => refreshPreview(inputId));
+    if (file) file.addEventListener('change', async () => {
+        try { inp.value = await fileToBase64(file.files[0], maxSize); refreshPreview(inputId); }
+        catch (err) { alert(err.message); }
+        file.value = '';
+    });
+}
+// a prévia da foto do perfil usa o id "ap-photo-preview"
+(function fixProfilePreviewId() {
+    const p = document.getElementById('ap-photo-preview');
+    if (p) p.id = 'ap-photo-url-preview';
+})();
+bindImagePicker('ap-photo-url', 'ap-photo-file', 400);
+bindImagePicker('l-logo-square', 'l-logo-square-file', 256);
+bindImagePicker('l-logo-wide', 'l-logo-wide-file', 800);
+document.querySelectorAll('[data-clear]').forEach(b => b.addEventListener('click', () => {
+    const id = b.getAttribute('data-clear');
+    const el = document.getElementById(id);
+    if (el) { el.value = ''; refreshPreview(id); }
+}));
+
+// =======================================================
+// PERFIL DO ADMINISTRADOR
+// =======================================================
+const DEFAULT_AVATAR = "https://win98icon.org/styles/asset/windows98/v1/user_computer-0.png";
+function applyAdminProfileToNavbar(p) {
+    p = p || {};
+    const display = p.apelido || [p.nome, p.sobrenome].filter(Boolean).join(' ') || "Diretor Admin";
+    if (userName) userName.textContent = display;
+    if (userAvatar) userAvatar.src = p.foto || (currentUser && currentUser.photoURL) || DEFAULT_AVATAR;
+}
+async function fillAdminProfileForm() {
+    if (!currentUId) return;
+    const snap = await get(ref(database, `usuarios/${currentUId}/perfil`));
+    const p = snap.exists() ? snap.val() : {};
+    const s = (id, v) => { const el = document.getElementById(id); if (el) el.value = v ?? ''; };
+    s('ap-nome', p.nome); s('ap-sobrenome', p.sobrenome); s('ap-apelido', p.apelido);
+    s('ap-cidade', p.cidade); s('ap-whatsapp', formatPhone(p.whatsapp)); s('ap-bio', p.bio);
+    s('ap-email', p.email || (currentUser && currentUser.email)); s('ap-photo-url', p.foto);
+    refreshPreview('ap-photo-url');
+}
+const btnSaveAdminProfile = document.getElementById('btn-save-admin-profile');
+if (btnSaveAdminProfile) btnSaveAdminProfile.addEventListener('click', async () => {
+    if (!isAdminMode || !currentUId) return;
+    const v = id => document.getElementById(id).value.trim();
+    const data = {
+        nome: v('ap-nome'), sobrenome: v('ap-sobrenome'), apelido: v('ap-apelido'),
+        cidade: v('ap-cidade'), whatsapp: v('ap-whatsapp').replace(/\D/g, ''),
+        bio: v('ap-bio'), foto: v('ap-photo-url'),
+        email: currentUser ? currentUser.email : v('ap-email')
+    };
+    if (!data.nome) { alert("Informe pelo menos o nome."); return; }
+    btnSaveAdminProfile.disabled = true;
+    try {
+        await update(ref(database, `usuarios/${currentUId}/perfil`), data);
+        applyAdminProfileToNavbar(data);
+        alert("✅ Perfil atualizado com sucesso!");
+    } catch (err) { alert("Erro ao salvar perfil: " + err.message); }
+    btnSaveAdminProfile.disabled = false;
 });
