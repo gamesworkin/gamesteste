@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Games Workin' Emulação Online</title>
-    
+    <link rel="manifest" href="manifest.json">
     <link rel="shortcut icon" href="fav.ico" type="image/x-icon">
     <link rel="icon" href="fav.ico" type="image/x-icon">
 
+    <script>try{var t=localStorage.getItem('gw-theme');document.documentElement.setAttribute('data-theme',t||'padrao');}catch(e){document.documentElement.setAttribute('data-theme','padrao');}</script>
     <link rel="stylesheet" href="style.css">
     <script type="importmap">
         {
@@ -43,6 +44,10 @@
             </div>
         </nav>
     </header>
+
+    <button id="btn-theme-toggle" class="theme-fab" type="button" aria-label="Trocar tema">
+        <span class="theme-dot">🌙</span><span class="theme-label">Tema: Padrão</span>
+    </button>
 
     <div id="modal-auth" class="modal hidden">
         <div class="modal-content">
@@ -412,6 +417,11 @@
         </main>
     </div>
 
+<a href="https://wa.me/5588988470190" target="_blank" class="whatsapp-float">
+    		<img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
+		</a>
+    
     <script type="module" src="app.js"></script>
+    <script src="theme.js"></script>
 </body>
 </html>
