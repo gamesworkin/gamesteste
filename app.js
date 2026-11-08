@@ -24,6 +24,17 @@ let cachedGames = {};
 let selectedPreviewGameId = null;
 let isAdminMode = false;
 
+// --- Bloqueio de botão direito e atalhos (não se aplica ao administrador) ---
+document.addEventListener("contextmenu", (e) => { if (!isAdminMode) e.preventDefault(); });
+document.addEventListener("keydown", (e) => {
+    if (isAdminMode) return;
+    const k = (e.key || "").toLowerCase();
+    const ctrl = e.ctrlKey || e.metaKey;
+    if (k === "f12" || (ctrl && e.shiftKey && ["i","j","c"].includes(k)) || (ctrl && ["u","s"].includes(k))) {
+        e.preventDefault(); e.stopPropagation();
+    }
+}, true);
+
 // DEFINIÇÃO DA WHITELIST DE PROVEDORES DE EMAIL
 const emailWhitelist = [
     "gmail.com",
